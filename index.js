@@ -56,17 +56,17 @@ function getUserById(request, response) {
 server.delete('/api/users/:id', deleteUserById);
 
 function deleteUserById(request, response) {
-    // When the client makes a `DELETE` request to `/api/users/:id`:
-    
-    // - If the _user_ with the specified `id` is not found:
-    
-    //   - return HTTP status code `404` (Not Found).
-    //   - return the following JSON object: `{ message: "The user with the specified ID does not exist." }`.
-    
-    // - If there's an error in removing the _user_ from the database:
-    //   - cancel the request.
-    //   - respond with HTTP status code `500`.
-    //   - return the following JSON object: `{ error: "The user could not be removed" }`.
+    const { id } = request.params;
+    db.remove(id)
+    .then(res => {
+        if (!res) {
+            return response.status(404).json({ message: "The user with the specified ID does not exist." });
+        }
+        return response.status(200).json(res);
+    })
+    .catch(err => {
+        return response.status(500).json(err);
+    })
 }
 
 server.put('/api/users/:id', editUserById);
